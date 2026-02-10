@@ -6,7 +6,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/clerk-reac
 import { Button } from "./ui/button";
 import { ThemeToggle } from "./darkmode-toggle";
 
-export default function Navbar() {
+export default function Navbar({ role }: { role?: string }) {
   return (
     <nav className="border-b bg-background">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
@@ -19,20 +19,22 @@ export default function Navbar() {
               <span className="text-xl font-bold">Feedback Fusion</span>
             </div>
           </Link>
-          <Link href="/roadmap" className="text-sm hover:text-primary flex items-center gap-1">
+          <Link href="/roadmap" className="text-sm hover:text-primary flex items-center gap-1 font-medium">
             <Map className="h-4 w-4" />
             Roadmap
           </Link>
-          <Link href="/feedback" className="text-sm hover:text-primary flex items-center gap-1">
+          <Link href="/feedback" className="text-sm hover:text-primary flex items-center gap-1 font-medium">
             <MessageSquare className="h-4 w-4" />
             Feedback
           </Link>
-          {/* Admin Link*/}
+          {/* Admin Link: Only shown if role is admin */}
           <SignedIn>
-            <Link href="/admin" className="text-sm hover:text-primary transition-colors flex items-center gap-1">
-              <Shield className="h-4 w-4" />
-              Admin
-            </Link>
+            {role === "admin" && (
+              <Link href="/admin" className="text-sm hover:text-primary transition-colors flex items-center gap-1 font-medium text-purple-600 dark:text-purple-400">
+                <Shield className="h-4 w-4" />
+                Admin
+              </Link>
+            )}
           </SignedIn>
         </div>
         <div className="flex items-center gap-4">

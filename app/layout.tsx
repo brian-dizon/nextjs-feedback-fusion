@@ -28,13 +28,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  await syncCurrentUser();
+  const dbUser = await syncCurrentUser();
+  
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-            <Navbar />
+            <Navbar role={dbUser?.role} />
             <main className="flex-1">
               {children}
             </main>
