@@ -1,65 +1,159 @@
-import Image from "next/image";
+import { GradientHeader } from "@/components/gradient-header";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import prisma from "@/lib/prisma";
+import {
+  ArrowRight,
+  BarChart,
+  Map,
+  MessageSquare,
+  Users,
+  Zap,
+} from "lucide-react";
+import Link from "next/link";
+import { Suspense } from "react";
+import { StatsSkeleton } from "@/components/skeletons";
 
-export default function Home() {
+async function DynamicStats() {
+  // Fetch real stats from the database for the hero section
+  const totalPosts = await prisma.posts.count();
+  const totalVotes = await prisma.votes.count();
+  const completedPosts = await prisma.posts.count({
+    where: { status: "completed" },
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <section className="bg-muted/30 rounded-3xl p-12 text-center border">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-12">
+        <div className="space-y-2">
+          <div className="text-5xl font-extrabold tracking-tight text-primary">{totalPosts}</div>
+          <div className="text-muted-foreground font-semibold uppercase tracking-wider text-sm">Suggestions</div>
+        </div>
+        <div className="space-y-2 border-y sm:border-y-0 sm:border-x py-8 sm:py-0">
+          <div className="text-5xl font-extrabold tracking-tight text-primary">{totalVotes}</div>
+          <div className="text-muted-foreground font-semibold uppercase tracking-wider text-sm">Votes Cast</div>
+        </div>
+        <div className="space-y-2">
+          <div className="text-5xl font-extrabold tracking-tight text-primary">{completedPosts}</div>
+          <div className="text-muted-foreground font-semibold uppercase tracking-wider text-sm">Features Shipped</div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+export default function HomePage() {
+  return (
+    <div className="container mx-auto py-10 px-4 space-y-16">
+      {/* Hero Section: Loads instantly */}
+      <GradientHeader
+        title="Shape the future of our product"
+        subtitle="Feedback Fusion is where your ideas come to life. Suggest features, vote on what matters most, and follow our public roadmap."
+      >
+        <div className="flex flex-col sm:flex-row gap-4 justify-start pt-6">
+          <Button
+            asChild
+            size="lg"
+            className="bg-white text-blue-600 hover:bg-gray-100 font-bold"
+          >
+            <Link href="/feedback/new">
+              Submit Feedback <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+          <Button
+            asChild
+            size="lg"
+            variant="outline"
+            className="bg-transparent border-white text-white hover:bg-white/10 font-bold"
+          >
+            <Link href="/roadmap">
+              View Roadmap <Map className="ml-2 h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </GradientHeader>
+
+      {/* Feature Section: Loads instantly */}
+      <section className="space-y-12">
+        <div className="text-center space-y-4">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How It Works</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
+            A simple 4-step process to bridge the gap between users and developers.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <Card className="border-t-4 border-t-blue-500 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <MessageSquare className="h-10 w-10 text-blue-500 mb-2" />
+              <CardTitle>Submit Ideas</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground leading-relaxed">
+                Share your suggestions and feature requests directly with the community.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-t-4 border-t-purple-500 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <BarChart className="h-10 w-10 text-purple-500 mb-2" />
+              <CardTitle>Vote & Prioritize</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground leading-relaxed">
+                Upvote the ideas you love to help us understand what we should build next.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-t-4 border-t-indigo-500 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <Users className="h-10 w-10 text-indigo-500 mb-2" />
+              <CardTitle>Public Roadmap</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground leading-relaxed">
+                Track our progress in real-time on our transparent public roadmap.
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="border-t-4 border-t-green-500 shadow-sm hover:shadow-md transition-shadow">
+            <CardHeader>
+              <Zap className="h-10 w-10 text-green-500 mb-2" />
+              <CardTitle>See Results</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground leading-relaxed">
+                Watch as your community feedback transforms into real, shipped features.
+              </p>
+            </CardContent>
+          </Card>
         </div>
-      </main>
+      </section>
+
+      {/* Stats Section: Dynamic loading */}
+      <Suspense fallback={<StatsSkeleton />}>
+        <DynamicStats />
+      </Suspense>
+
+      {/* Call to Action: Loads instantly */}
+      <section className="text-center py-10">
+        <Card className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 border-none shadow-xl overflow-hidden relative">
+          <div className="p-10 space-y-6 relative z-10">
+            <h2 className="text-3xl font-bold">Ready to make an impact?</h2>
+            <p className="text-slate-300 dark:text-slate-600 max-w-xl mx-auto text-lg">
+              Join our community today and help us build the features you&#39;ve always wanted.
+            </p>
+            <Button asChild size="lg" className="bg-white text-slate-900 hover:bg-slate-200 dark:bg-slate-900 dark:text-white dark:hover:bg-slate-800 font-bold px-8">
+              <Link href="/feedback">Get Started Now</Link>
+            </Button>
+          </div>
+          <div className="absolute -right-20 -bottom-20 w-64 h-64 bg-blue-500/20 rounded-full blur-3xl"></div>
+          <div className="absolute -left-20 -top-20 w-64 h-64 bg-purple-500/20 rounded-full blur-3xl"></div>
+        </Card>
+      </section>
     </div>
   );
 }

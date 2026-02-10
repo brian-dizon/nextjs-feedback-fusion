@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model posts {
+  id          Int        @id @default(autoincrement())
+  title       String
+  description String?
+  category    String
+  status      PostStatus @default(under_review)
+  authorId    Int
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime
+  users       users      @relation(fields: [authorId], references: [id])
+  votes       votes[]
+}
+
+model users {
+  id          Int     @id @default(autoincrement())
+  clerkUserId String  @unique
+  email       String  @unique
+  name        String?
+  image       String
+  role        Role    @default(user)
+  posts       posts[]
+  votes       votes[]
+}
+
+model votes {
+  id     Int   @id @default(autoincrement())
+  userId Int
+  postId Int
+  posts  posts @relation(fields: [postId], references: [id])
+  users  users @relation(fields: [userId], references: [id])
+
+  @@unique([userId, postId])
+}
+
+enum PostStatus {
+  under_review
+  planned
+  in_progress
+  completed
+}
+
+enum Role {
+  user
+  admin
+}
