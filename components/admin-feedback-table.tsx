@@ -22,7 +22,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { toast } from "sonner";
-import type { postsModel as posts, usersModel as users, votesModel as votes } from "@/lib/generated/prisma/models";
+import type { posts, users, votes } from "@prisma/client";
 
 // Define our strong types
 type PostWithRelations = posts & {

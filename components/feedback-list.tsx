@@ -8,7 +8,7 @@ import { Badge } from "./ui/badge";
 import { getCategoryDesign } from "@/app/data/category-data";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
-import type { postsModel as posts, usersModel as users, votesModel as votes } from "@/lib/generated/prisma/models";
+import type { posts, users, votes } from "@prisma/client";
 
 // Define the shape of our post with its relations
 type PostWithRelations = posts & {
